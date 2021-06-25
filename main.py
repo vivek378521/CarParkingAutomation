@@ -1,17 +1,17 @@
-parking_space = []
+parking_space = []  # global variables to store values
 no_of_parking_spaces = 0
 
 
 def init():  # creating the parking lot with the required parking space
     for i in range(no_of_parking_spaces):
         parking_space.append(["empty", "empty"])
-    print("Created parking of " + str(no_of_parking_spaces) + " slots")
+    print("Created parking of " + str(no_of_parking_spaces + 1) + " slots")
 
 
 def populate_parking(registration_num, age):  # populating the parking lot as cars enter it
     assigned_parking_space = False
     for i in range(no_of_parking_spaces):
-        if parking_space[i][0] == "empty":   # populating the empty slots first if any car has left
+        if parking_space[i][0] == "empty":  # populating the empty slots first if any car has left
             parking_space[i][0] = registration_num
             parking_space[i][1] = age
             print("Car with vehicle registration number \"" + parking_space[i][
@@ -25,7 +25,7 @@ def populate_parking(registration_num, age):  # populating the parking lot as ca
 def empty_slot(slot_no):
     if slot_no > no_of_parking_spaces:  # if you have entered invalid slot number
         print("The limit of number of slots is " + str(no_of_parking_spaces))
-    print("Slot number " + str(slot_no + 1) + "vacated, the car with vehicle registration number \"" +
+    print("Slot number " + str(slot_no + 1) + " vacated, the car with vehicle registration number \"" +
           parking_space[slot_no][0] + "\" left the space, the driver of the car was of age " + str(
         parking_space[slot_no][1]))
     parking_space[slot_no] = ["empty", "empty"]
@@ -69,20 +69,8 @@ def get_slot_from_registrationnum(reg):
     else:
         print("No car with the registration number \"" + reg + "\" is currently parked in the lot")
 
-
-def take_input():  # processing the input
-    with open("testing.txt") as f:
-        lines = f.readlines()  # reading the input line by line
-    global no_of_parking_spaces
-    if lines == "":
-        print("Input is empty")
-    if lines[0] != "Create_parking_lot":
-        print("Cannot assign parking space without creating a lot")
-    no_of_parking_spaces = int(lines[0].split()[1]) - 1  # assigning the number of parking space
-    if no_of_parking_spaces <= 0:
-        print("Invalid input of number of parking spaces, please enter positive value")
-    init()  # assigning slots
-    for line in lines: # line by line traversal
+def read_lines(lines):
+  for line in lines:  # line by line traversal
         current_condition = line.split()
         if current_condition[0].lower() == "park":  # can be in lower case
             populate_parking(current_condition[1], current_condition[3])
@@ -96,6 +84,24 @@ def take_input():  # processing the input
             get_reg_no_by_age(int(current_condition[1]))
 
 
+def take_input():  # processing the input
+    print("Please Enter the input file name(txt file)")
+    name_of_file = input()
+    with open(name_of_file + ".txt") as f:
+        lines = f.readlines()  # reading the input line by line
+    global no_of_parking_spaces
+    if lines == "":
+        print("Input is empty")
+    if not lines[0].split()[0] == "Create_parking_lot":
+        print("Cannot assign parking space without creating a lot")
+    no_of_parking_spaces = int(lines[0].split()[1]) - 1  # assigning the number of parking space
+    if no_of_parking_spaces <= 0:
+        print("Invalid input of number of parking spaces, please enter positive value")
+        exit()
+    init()  # assigning slots
+    read_lines(lines)
+    
+
+
 if __name__ == "__main__":
     take_input()
-    
